@@ -29,19 +29,16 @@ Complex Complex::operator*(const Complex& other) {
 // ----------------------------------------------------------
 
 /*
- * Checks whether the complex value is bounded under the 
- * infinite iteration given by the complex number c
- *
- * In reality, we use this with a rectangle but since there 
- * is a constructor from a rectangle to a complex number,
- * it doesn't cause any issues
+ * Returns the fraction of iterations required to unbound the 
+ * complex number `val`
  */
-bool isBounded(Complex val) {
+double isBounded(Complex val) {
 	Complex z(0, 0);
-	for (int _ = 0; _ < 50; ++_) {
+	int i = 0;
+	for (; i < 50; ++i) {
 		if (z.getLength() > 2) 
-			return false;
+			break;
 		z = z * z + val;
 	}
-	return true;
+	return static_cast<double>(i)/50;
 }

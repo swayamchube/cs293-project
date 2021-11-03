@@ -20,4 +20,4 @@ private:
 	double x, y;
 };
 
-bool isBounded(Complex);
+double isBounded(Complex);
