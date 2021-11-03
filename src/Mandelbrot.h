@@ -1,10 +1,12 @@
 #include <cmath>
+#include "../include/simplecpp"
 
 class Complex {
 public:
 	Complex();
 	Complex(double, double);
 	Complex(const Complex&);
+	Complex(const simplecpp::Rectangle&);
 
 	double getX();
 	double getY();
@@ -18,4 +20,4 @@ private:
 	double x, y;
 };
 
-bool isBounded(Complex, Complex);
+bool isBounded(Complex);

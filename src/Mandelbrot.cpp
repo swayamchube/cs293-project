@@ -1,9 +1,11 @@
 #include "Mandelbrot.h"
+#include "../include/simplecpp"
 #include <cmath>
 
 Complex::Complex() : x(0), y(0) { }
 Complex::Complex(double x, double y) : x(x), y(y) { }
 Complex::Complex(const Complex& other) : x(other.x), y(other.y) { }
+Complex::Complex(const simplecpp::Rectangle& rect) : x(rect.getX()), y(rect.getY()) { }
 
 double Complex::getX() { return x; }
 double Complex::getY() { return y; }
@@ -26,13 +28,20 @@ Complex Complex::operator*(const Complex& other) {
 
 // ----------------------------------------------------------
 
-// The most important function in this project
-bool isBounded(Complex val, Complex c) {
+/*
+ * Checks whether the complex value is bounded under the 
+ * infinite iteration given by the complex number c
+ *
+ * In reality, we use this with a rectangle but since there 
+ * is a constructor from a rectangle to a complex number,
+ * it doesn't cause any issues
+ */
+bool isBounded(Complex val) {
+	Complex z(0, 0);
 	for (int _ = 0; _ < 50; ++_) {
-		if (val.getLength() > 2) {
+		if (z.getLength() > 2) 
 			return false;
-		}
-		val = val * val + c;
+		z = z * z + val;
 	}
 	return true;
 }

@@ -1,6 +1,6 @@
 .PHONY: run, clean
 project: src/main.o src/Mandelbrot.o
-	g++ src/main.o src/Mandelbrot.o -o build/project -L./lib -lsprite -lGL -lGLEW -lglfw -lSOIL -lGLC -I./include
+	g++ src/main.o src/Mandelbrot.o -o build/project -L./lib -lsprite -lGL -lGLEW -lglfw -lSOIL -lGLC -lsfml-graphics -lsfml-window -lsfml-system -I./include 
 
 main.o: src/main.cpp
 	g++ -c src/main.cpp -o src/main.o
