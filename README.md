@@ -1,8 +1,21 @@
 # Mandelbrot Zoom (200050141)
 
-I am hoping that I would be able to do this project using the SFML library with its bindings in C++. The header file `Mandelbrot.h` already contains all the required helper code. The only thing left to do is to shade the entire region using the function `double isBounded(Complex)`.
-The main idea is to take the `double` (which is between 0 and 1) that is returned by the function to determine the color of that particular pixel, which is called the naive escape-time algorithm (I shall implement this in the latter half of this project). The time complexity is rather large for something like this so I expect a good 5 mins of runtime.
+This is currently incomplete. 
 
-For compilation you may need to install the `libsfml-dev` package using your distro's package manager and make the build directory (`mkdir build`). Then simply run the `Makefile` and the executable would be placed in the `./build` directory. (You really don't need the `s++` compiler for this)
+For the timebeing, this only draws the Mandelbrot Set, in greyscale using the SFML libraries. The zoom would be implemented subsequetly.
 
-**NOTE:** If you're using a tiling window manager like DWM, change from tiling mode to floating mode (the window could be ill-formed otherwise).
+## Compilation and Build
+```bash
+$ sudo apt install libsfml-dev
+# replace apt with a suitable package manager
+```
+```bash
+$ git clone https://github.com/swayamchube/cs293-project
+```
+```bash
+$ cd cs293-project
+$ mkdir build
+$ make # This places the executable in ./build/project
+```
+
+**NOTE:** If you are using a tiling window manager like DWM, you may want to switch to floating mode, unless you want an ill-formed window.

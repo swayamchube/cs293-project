@@ -3,10 +3,10 @@
 #include <SFML/Graphics.hpp>
 #include "Mandelbrot.h"
 
-#define ORIGIN_X 400
-#define ORIGIN_Y 400
-#define WINDOW_X 800
-#define WINDOW_Y 800
+#define ORIGIN_X 300
+#define ORIGIN_Y 300
+#define WINDOW_X 600
+#define WINDOW_Y 600
 
 /*
  -2                   800 px                   +2
@@ -53,8 +53,8 @@ int main() {
 		// Naive Escape time algorithm
 		for (int i = 0; i < WINDOW_X; ++i) {
 			for (int j = 0; j < WINDOW_Y; ++j) {
-				// find scaled coordinates
-				double x, y;
+				// Find scaled coordinates
+				double x, y; 
 				x = static_cast<double>(i - ORIGIN_X)/ORIGIN_X * 2;
 				y = static_cast<double>(j - ORIGIN_Y)/ORIGIN_Y * 2;
 				Complex pixel(x, y);
