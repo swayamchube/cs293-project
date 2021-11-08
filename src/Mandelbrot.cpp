@@ -1,12 +1,10 @@
 #include "Mandelbrot.h"
-#include "../include/simplecpp"
 #include <cmath>
 
 // Constructors
 Complex::Complex() : x(0), y(0) { }
 Complex::Complex(double x, double y) : x(x), y(y) { }
 Complex::Complex(const Complex& other) : x(other.x), y(other.y) { }
-Complex::Complex(const simplecpp::Rectangle& rect) : x(rect.getX()), y(rect.getY()) { }
 
 // Getters
 double Complex::getX() { return x; }

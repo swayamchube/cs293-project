@@ -1,5 +1,5 @@
-#include <cmath>
-#include "../include/simplecpp"
+#ifndef __MANDELBROT_H__
+#define __MANDELBROT_H__
 
 class Complex {
 public:
@@ -7,7 +7,6 @@ public:
 	Complex();
 	Complex(double, double);
 	Complex(const Complex&);
-	Complex(const simplecpp::Rectangle&);
 
 	// Getters
 	double getX();
@@ -20,7 +19,9 @@ public:
 	Complex operator+(const Complex&);
 	Complex operator*(const Complex&);
 private:
-	double x, y;
+	double x, y; // x + iy
 };
 
 double isBounded(Complex);
+
+#endif
