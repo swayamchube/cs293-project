@@ -22,6 +22,6 @@ private:
 	double x, y; // x + iy
 };
 
-double isBounded(Complex);
+double isBounded(Complex, int);
 
 #endif

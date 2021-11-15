@@ -33,13 +33,13 @@ Complex Complex::operator*(const Complex& other) {
  * Returns the fraction of iterations required to unbound the 
  * complex number `val`
  */
-double isBounded(Complex val) {
+double isBounded(Complex val, int iterations) {
 	Complex z(0, 0);
 	int i = 0;
-	for (; i < 50; ++i) {
+	for (; i < iterations; ++i) {
 		if (z.getLength() > 2) 
 			break;
 		z = z * z + val;
 	}
-	return static_cast<double>(i)/50;
+	return static_cast<double>(i)/iterations;
 }

@@ -2,11 +2,8 @@
 #include <chrono>
 #include <SFML/Graphics.hpp>
 #include "Mandelbrot.h"
+#include "Application.h"
 
-#define ORIGIN_X 300
-#define ORIGIN_Y 300
-#define WINDOW_X 600
-#define WINDOW_Y 600
 #define EULER_CONSTANT 2.718281828459045
 
 /*
@@ -38,6 +35,7 @@
 enum ERRORS {
 	NONE, LOG
 };
+/*
 
 int main(int argc, char* argv[]) {
 	std::FILE* logfile = fopen("mandelbrot.log", "w");
@@ -97,4 +95,10 @@ int main(int argc, char* argv[]) {
 		x_max *= zoom_inverse;
 		y_max *= zoom_inverse;
 	}
+}
+*/
+
+int main() {
+	Application application("Mandelbrot", 600, 0.9, Complex(-1.4, 0), "mandelbrot.log");
+	application.run();
 }
