@@ -7,10 +7,16 @@ Complex::Complex(double x, double y) : x(x), y(y) { }
 Complex::Complex(const Complex& other) : x(other.x), y(other.y) { }
 
 // Getters
-double Complex::getX() { return x; }
-double Complex::getY() { return y; }
+double Complex::getX() { 
+	return x; 
+}
+double Complex::getY() { 
+	return y; 
+}
 
-double Complex::getLength() { return std::sqrt(x * x + y * y); }
+double Complex::getLength() { 
+	return std::sqrt(x * x + y * y); 
+}
 
 // Operator Overloads
 Complex Complex::operator=(const Complex& other) {
@@ -27,6 +33,18 @@ Complex Complex::operator*(const Complex& other) {
 	return Complex(x * other.x - y * other.y, x * other.y + y * other.x);
 }
 
+Complex& Complex::operator+=(const Complex& other) {
+	this->x += other.x;
+	this->y += other.y;
+	return *this;
+}
+
+Complex& Complex::operator-=(const Complex& other) {
+	this->x -= other.x;
+	this->y -= other.y;
+	return *this;
+}
+
 // ----------------------------------------------------------
 
 /*
@@ -41,5 +59,6 @@ double isBounded(Complex val, int iterations) {
 			break;
 		z = z * z + val;
 	}
-	return static_cast<double>(i)/iterations;
+	double fraction = static_cast<double>(i)/iterations;
+	return fraction;
 }

@@ -7,7 +7,7 @@
 #define EULER_CONSTANT 2.718281828459045
 
 /*
- -2                   800 px                   +2
+ -2                   600 px                   +2
  +----------------------------------------------+ +2
  |                                              |
  |                                              |
@@ -16,7 +16,7 @@
  |                                              |
  |                                              |
  |                                              |
- | 800 px                0                      | 0
+ | 600 px                0                      | 0
  |                                              |
  |                                              |
  |                                              |
@@ -28,7 +28,7 @@
 */
 
 /*
- * 1. Use a simple black-white shading.
+ * 1. Let the user choose the colorscheme
  * 2. Iterate over all the pixels in the image.
  */
 
@@ -99,6 +99,7 @@ int main(int argc, char* argv[]) {
 */
 
 int main() {
-	Application application("Mandelbrot", 600, 0.9, Complex(-1.4, 0), "mandelbrot.log");
+	Application application("Mandelbrot", 600, 0.95, Complex(-1.4, 0), "mandelbrot.log");
+	application.splash();
 	application.run();
 }

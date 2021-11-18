@@ -1,19 +1,23 @@
 /**
- * This is only for benchmarking purposes.
- * This serves no other purpose.
- * Also, I need to reach those 1500 sloc.
+ * This is used for both benchmarking,
+ * calculating FPS and deciding when to quit
+ * zooming into the figure.
  */
 
-#ifdef __TIMER_H__
+#ifndef __TIMER_H__
 #define __TIMER_H__
 
 #include <chrono>
 
+// Implementing a simple timer using the RAII principle
 class Timer {
 public:
 	Timer();
-private:
+	~Timer();
 	
+	long long int getTimeElapsed();
+private:
+	std::chrono::time_point<std::chrono::high_resolution_clock> m_start;
 };
 
-#endif
+#endif // __TIMER_H__

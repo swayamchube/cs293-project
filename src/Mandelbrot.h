@@ -18,6 +18,10 @@ public:
 	Complex operator=(const Complex&);
 	Complex operator+(const Complex&);
 	Complex operator*(const Complex&);
+
+	Complex& operator+=(const Complex&);
+	Complex& operator-=(const Complex&);
+	Complex& operator*=(const Complex&);
 private:
 	double x, y; // x + iy
 };

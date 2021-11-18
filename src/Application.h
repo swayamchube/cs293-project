@@ -7,12 +7,19 @@
 #include <memory>
 #include "Mandelbrot.h"
 
-#define ITER_MAX 100
+//TODO: Come up with a better estimate for ITER_MAX
+#define ITER_MAX 200
+
+void shadeImageLeftToRight(sf::Image&, sf::Color, sf::Color);
 
 class Application {
 private:
 	int checkHealth();
-	void foo();
+	void toggleZoom();
+	void updateOrigin();
+	void reset();
+	void incrementZoom();
+	void decrementZoom();
 public:
 	// Constructors
 	Application(
@@ -23,18 +30,29 @@ public:
 		const char* logfile
 	);
 
+	// Copy Constructor is not valid
+	Application(const Application&) = delete;
+
+
 	// Destructor 
 	~Application();
 
 	// Member Functions
 	void run(); // this does all the heavy lifting
+
+	void splash(); // Allows the user to choose the colorscheme
 private:
 	sf::RenderWindow* m_window; // pointer to the window
 	std::string m_name; // name of the window
 	int WINDOW_SIZE; // will be a square window
+	double mx_max = 2.0, my_max = 2.0;
 	Complex m_origin; // the point of zoom
 	double m_zoom; // lies between 0 and 1. Closer to 0, faster the zoom
+	double old_zoom = 1;
+	bool m_paused = false;
 	std::FILE* m_logFile; // to log the errors if any
+	sf::Color bounded;
+	sf::Color unbounded;
 
 };
 
@@ -44,7 +62,8 @@ private:
 SAMPLE OF main.cpp
 
 int main() {
-	Application("Mandelbrot", 800, 0.9, Complex(.,.), "mandelbrot.log");
-	Application.run();
+	Application application("Mandelbrot", 800, 0.95, Complex(.,.), "mandelbrot.log");
+	application.splash();
+	application.run();
 }
 */
