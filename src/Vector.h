@@ -7,6 +7,17 @@
 #include <memory>
 #include <stdexcept>
 
+/**
+ * Following is an iterator class for the vector class
+ * The iterator is required for writing member based for loops
+ *
+ * This is basically a wrapper around a pointer that points to
+ * a specific location in the vector which is provided in the 
+ * constructor.
+ *
+ * To spawn an iterator, use
+ * Vector<type>::iterator it = vec.begin(); or something like that 
+ */
 template<class Vec>
 class Iterator {
 public:
@@ -100,7 +111,7 @@ public:
 		m_ptr[m_size++] = val;
 	}
 
-	bool isEmpty() {
+	bool isEmpty() const {
 		return m_size == 0;
 	}
 
@@ -108,17 +119,24 @@ public:
 		return m_size;
 	}
 
-	iterator begin() {
+	unsigned long capacity() const {
+		return m_capacity;
+	}
+	
+	// returns an iterator at the beginning of the vector
+	iterator begin() const {
 		return iterator(m_ptr);
 	}
-
-	iterator end() {
+	
+	// returns an iterator at the end of the vector
+	iterator end() const {
 		return iterator(m_ptr);
 	}
 
 	/* Operator Overloads */
-	T& operator[](unsigned long index) {
-		if (index >= m_size) {
+	T& operator[](unsigned long index) const {
+		// check for out of bounds access
+		if (index >= m_size) { 
 			throw std::out_of_range("Error: Out of bounds access");
 		}
 		return *(m_ptr + index);

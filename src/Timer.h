@@ -9,7 +9,17 @@
 
 #include <chrono>
 
-// Implementing a simple timer using the RAII principle
+/**
+ * This uses the simple RAII principle
+ * The timer starts when the timer is spawned
+ * The timer stops when the timer is destroyed
+ * If the header DESTRUCTOR_TIMER is defined, 
+ * only then will the destructor log the amount of time 
+ * the timer was alive for.
+ *
+ * Member Variable:
+ *		m_start: Time Point of start
+ */
 class Timer {
 public:
 	Timer();

@@ -1,20 +1,26 @@
 #ifndef __MANDELBROT_H__
 #define __MANDELBROT_H__
 
+/**
+ * Simple Complex number class
+ * Provides a subset of the facilities provided by
+ * the std::complex class
+ */
 class Complex {
 public:
-	// Constructors
+	/* Constructors */
 	Complex();
 	Complex(double, double);
 	Complex(const Complex&);
 
-	// Getters
+	/* Getters */
 	double getX();
 	double getY();
 
-	double getLength();
+	double getLength(); // returns modulus of the complex number 
 
-	// Operator Overloads
+	/* Operator Overloads */
+	// Arithmetic Operators
 	Complex operator=(const Complex&);
 	Complex operator+(const Complex&);
 	Complex operator*(const Complex&);
@@ -22,13 +28,15 @@ public:
 	Complex& operator+=(const Complex&);
 	Complex& operator-=(const Complex&);
 	Complex& operator*=(const Complex&);
-
+	
+	// Logical Operators
 	bool operator==(const Complex&);
 	bool operator!=(const Complex&);
 private:
 	double x, y; // x + iy
 };
 
+/* Helper Function */
 double isBounded(Complex, int);
 
-#endif
+#endif //__MANDELBROT_H__

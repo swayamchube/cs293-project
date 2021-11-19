@@ -12,8 +12,17 @@
 #include "Timer.h"
 #include "Vector.h"
 
+// The number of iterations we begin with
 #define ITERATIONS_INIT 50
 
+/**
+ * This constructor takes in:
+ * 1. Name of the window
+ * 2. Size of the window (it will be a square window)
+ * 3. Inverse of the zoom (the amount to zoom per render)
+ * 4. The point of zoom
+ * 5. Name of the log file (in case of unrecoverable errors)
+ */
 Application::Application(
 	std::string name,
 	int WINDOW_SIZE,
@@ -30,11 +39,10 @@ Application::Application(
 	this->bounded = sf::Color(0,0,0);
 	this->unbounded = sf::Color(255,0,0);
 
-	//fprintf(m_logFile, "Application has been constructed\n");
 }
 
 Application::~Application() {
-	//fprintf(m_logFile, "Application has ended\n");
+	fprintf(m_logFile, "Application has ended\n");
 	delete m_window;
 }
 
@@ -49,7 +57,36 @@ int Application::checkHealth() {
 }
 
 // TODO: Multithread run (use 4 threads, hardcode this)
-
+/**
+ * This does almost all the heavy lifting
+ * 1. First it checks whether the the context window is properly formed
+ *
+ * 2. Checks whether the log file is streamed
+ *
+ * 3. Three components, an Image, Texture and Sprite are defined
+ *    These are used to draw the mandelbrot set on the window.
+ *    The image is loaded into the texture which is then loaded 
+ *    into the sprite which is finally drawn on screen.
+ * 
+ * 4. At the same time we also check for events like:
+ *    Closing the window: Gracefully exit from this
+ *    Clicking the spacebar to pause
+ *    Increasing or decreasing the zoom rate with f and s respectively
+ *
+ * 5. Note that after every zoom, the iterations are changed for the next
+ *    in order to maintain a level of detail.
+ *    Ofcourse there is a cap on the maximum number of iterations, given by 200.
+ *    The larger this value, the more detail one would have but that comes at 
+ *    the cost of a significant drop in FPS
+ * 
+ * 6. The algoithm used to draw the set is the Naive Escape Time algorithm
+ *    This iterates over each pixel and finds the fraction of iterations 
+ *    required for the complex number represented by that pixel to become 
+ *    unbounded. This fraction is then used to shade the pixel (RGB)
+ *
+ * 6. This also makes sure that the frame rate does not drop below 1, which is
+ *    facilitated by the use of a the timer class defined in src/Timer.h
+ */
 void Application::run() {
 	fprintf(m_logFile, "Checking health...\n");
 	
@@ -150,7 +187,7 @@ void Application::run() {
 
 		long long duration = timer.getTimeElapsed();
 
-		std::cout << duration << std::endl;
+		fprintf(m_logFile, "duration = %lld microseconds\n", duration);
 
 		// TODO: Come up with a good bound for FPS (1 sec is too low)
 		if (duration > 1e6) { // if FPS drops below 1 
@@ -163,26 +200,32 @@ void Application::run() {
 		mx_max *= m_zoom;
 		my_max *= m_zoom;
 
-		//std::printf("mx_max = %lf, my_max = %lf\n", mx_max, my_max);
-		
 		// TODO: Come up with a better increment to (int)iterations
 		iterations /= m_zoom;
 		
 		if (iterations > ITER_MAX)
 			iterations = ITER_MAX;
 
-		//fprintf(m_logFile, "iterations = %d\n", iterations);
+		fprintf(m_logFile, "iterations = %d\n", iterations);
+
+		fprintf(m_logFile, "--------------------------\n");
 	}
 }
 
 // Private Member Functions
 
 // may close the window
+/**
+ * 1. This first pauses the zoom
+ * 2. Then, starts a timer on 2 seconds for you to reselect the 
+ *    zoom point (done through the updateOrigin() function)
+ * 3. After those two seconds, if the spacebar is pressed, then it unpauses
+ */
 void Application::toggleZoom() {
-	std::cout << "Zoom has been paused!" << std::endl;
+	std::cerr << "Zoom has been paused!" << std::endl;
 	m_paused = true;
-	old_zoom = m_zoom;
-	m_zoom = 1;
+	old_zoom = m_zoom; // stores the zoom
+	m_zoom = 1; // resets the zoom
 
 	std::cout << "You have 2 seconds to reselect the zoom-origin" << std::endl;
 
@@ -202,6 +245,7 @@ void Application::toggleZoom() {
 				if (event.key.code == sf::Keyboard::Space) {
 					m_zoom = old_zoom;
 					m_paused = false;
+
 					std::cout << "Zoom Unpaused" << std::endl;
 					break;
 				}
@@ -211,12 +255,19 @@ void Application::toggleZoom() {
 }
 
 // This is only invoked when paused is called
+/**
+ * This polls the mouse. Once the click position is obtained, 
+ * the m_origin variable is changed suitably.
+ * **This function may also close the window**
+ */
 void Application::updateOrigin() {
 	/**
 	 * Wait 2 seconds for the user to reselect the origin. 
 	 * If no action takes place, break out of the loop
 	 */
 	Timer timer;
+	bool updated = false;
+
 	while(m_window->isOpen()) {
 		sf::Event event;
 
@@ -247,15 +298,17 @@ void Application::updateOrigin() {
 
 				Complex pixel(x, -y);
 				m_origin += pixel;
-
+					
+				updated = true;
 				break;
 			}
 		}
 	}
-
-	//std::cerr << "Origin Updated" << std::endl;
+	if (updated)
+		std::cerr << "Origin Updated" << std::endl;
 }
 
+// This resets the application to its original state
 void Application::reset() {
 	mx_max = 2.0;
 	my_max = 2.0;
@@ -263,25 +316,30 @@ void Application::reset() {
 	std::cerr << "Reset" << std::endl;
 }
 
+// This makes the zoom faster
 void Application::incrementZoom() {
 	m_zoom -= 0.01;
 	std::cerr << "Incremented Zoom" << std::endl;
 }
 
+// This makes the zoom slower
 void Application::decrementZoom() {
 	m_zoom += 0.01;
 	std::cerr << "Decremented Zoom" << std::endl;
 }
 
-// TODO: Make the splash-screen
-
-//void shadeImageLeftToRight(sf::Image, sf::Color, sf::Color);
+//More detailes are provided with the implementation
 int getClickedSprite(Vector<sf::Sprite>& Sprites, sf::Vector2i position);
 
 /**
  * The following is a naive way to implement a splash screen
  * The user is given an option to choose the colorscheme for 
  * the mandelbrot set.
+ *
+ * The options are rendered as 3 different sprites
+ * It would have been better to define a Button class and 
+ * let the user click on it with animations but I didn't have 
+ * enough time to implement it with such a level of abstraction
  */
 void Application::splash() {
 	// std::cout << "Splash Screen" << std::endl;
@@ -390,8 +448,15 @@ void Application::splash() {
 }
 
 
+///////////////////////////////////////////////////////////////////////////
 // Additional Non-Class Function(s);
 
+/**
+ * This function shades a rectangle which is represented by an image 
+ * from left to right given the color to the left and the color to the right
+ * I decided against using things like frag-shaders since this can be done 
+ * by simply accessing each pixel on the image without a significant delay
+ */
 void shadeImageLeftToRight(sf::Image& image, sf::Color left, sf::Color right) {
 	sf::Vector2u img_size = image.getSize();
 
@@ -400,22 +465,35 @@ void shadeImageLeftToRight(sf::Image& image, sf::Color left, sf::Color right) {
 
 	for (int i = 0; i < length; ++i) {
 		for (int j = 0; j < height; ++j) {
+			// computes the RGB for each pixel
+			// A linear descent in each is assumed from left to right
 			uint32_t r = ((length - i) * left.r + i * right.r)/length;
 			uint32_t g = ((length - i) * left.g + i * right.g)/length;
 			uint32_t b = ((length - i) * left.b + i * right.b)/length;
+
 			image.setPixel(i, j, sf::Color(r, g, b));
 		}
 	}
 }
 
+/**
+ * This is used to check whether the mouse click was on one of the sprrites
+ * If it was the function returns the index of the corresponding sprite
+ * If not it returns -1
+ */
 int getClickedSprite(Vector<sf::Sprite>& Sprites, sf::Vector2i position) {
 	
 	for (int i = 0; i < Sprites.size(); ++i) {
+		// x and y coordinates of the click
 		int x = position.x;
 		int y = position.y;
+
+		// size of the sprite
 		sf::FloatRect bounds = Sprites[i].getLocalBounds();
 		int height = bounds.height;
 		int width = bounds.width;
+
+		// the top left corner of the sprite
 		sf::Vector2f top = Sprites[i].getPosition();
 
 		if (x > top.x && x < top.x + width && y > top.y && y < top.y + height) {

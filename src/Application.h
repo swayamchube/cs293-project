@@ -8,10 +8,25 @@
 #include "Mandelbrot.h"
 #include "Vector.h"
 
-//TODO: Come up with a better estimate for ITER_MAX
 #define ITER_MAX 200
 
 void shadeImageLeftToRight(sf::Image&, sf::Color, sf::Color);
+
+/**
+ * The APPLICATION clas:
+ * Member Variables:
+ *		m_window: Pointer to the rendering window (will be square)
+ *		m_name: Name of the rendering window
+ *		WINDOW_SIZE: size of the window in pixels
+ *		mx_max, my_max: The maximum x and y offset from the origin 
+ *		m_origin: Complex number corresponding to the zoom point
+ *		zoom, old_zoom: self explanatory
+ *		m_paused: whether the zoom has been paused
+ *		m_logFile: the log file 
+ *		bounded, unbounded: The colors for pixels corresponding to the complex
+ *		numbers which are bounded and unbounded respectively.
+ *
+ */
 
 class Application {
 private:
@@ -52,8 +67,8 @@ private:
 	double old_zoom = 1;
 	bool m_paused = false;
 	std::FILE* m_logFile; // to log the errors if any
-	sf::Color bounded;
-	sf::Color unbounded;
+	sf::Color bounded; // bounded color
+	sf::Color unbounded; // unbounded color
 
 };
 
