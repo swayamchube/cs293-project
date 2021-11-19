@@ -45,6 +45,20 @@ Complex& Complex::operator-=(const Complex& other) {
 	return *this;
 }
 
+Complex& Complex::operator*=(const Complex& other) {
+	x = x * other.x - y * other.y;
+	y = x * other.y + y * other.x;
+	return *this;
+}
+
+bool Complex::operator==(const Complex& rhs) {
+	return (std::abs(x - rhs.x) < 1e-6 && std::abs(y - rhs.y) < 1e-6);
+}
+
+bool Complex::operator!=(const Complex& rhs) {
+	return !(std::abs(x - rhs.x) < 1e-6 && std::abs(y - rhs.y) < 1e-6);
+}
+
 // ----------------------------------------------------------
 
 /*
@@ -54,9 +68,12 @@ Complex& Complex::operator-=(const Complex& other) {
 double isBounded(Complex val, int iterations) {
 	Complex z(0, 0);
 	int i = 0;
+
 	for (; i < iterations; ++i) {
-		if (z.getLength() > 2) 
+		if (z.getLength() > 2) {
 			break;
+		}
+
 		z = z * z + val;
 	}
 	double fraction = static_cast<double>(i)/iterations;

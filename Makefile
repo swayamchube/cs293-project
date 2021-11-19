@@ -16,9 +16,6 @@ Application.o: src/Application.h src/Application.cpp
 Timer.o: src/Timer.h src/Timer.cpp
 	g++ $(CFLAGS) -c src/Timer.cpp -o src/Timer.o
 
-Vector.o: src/Vector.h src/Vector.cpp 
-	g++ $(CFLAGS) -c src/Vector.cpp -o src/Vector.o
-
 clean:
 	rm src/*.o
 
