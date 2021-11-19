@@ -2,11 +2,15 @@
 #include <cstdio>
 #include <cstdlib>
 #include <memory>
+#include <vector>
+#include <thread>
 #include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
 #include "Application.h"
 #include "Timer.h"
+#include "Vector.h"
 
 #define ITERATIONS_INIT 50
 
@@ -128,8 +132,13 @@ void Application::run() {
 				Complex pixel(x, -y);
 				pixel = pixel + m_origin;
 				double fraction = isBounded(pixel, iterations);
-				unsigned short rgb = 255 * fraction;
-				image.setPixel(i, j, sf::Color(255 - rgb, 0, 0));
+				//unsigned short rgb = 255 * fraction;
+
+				int r = bounded.r * fraction + unbounded.r * (1 - fraction);
+				int b = bounded.b * fraction + unbounded.b * (1 - fraction);
+				int g = bounded.g * fraction + unbounded.g * (1 - fraction);
+
+				image.setPixel(i, j, sf::Color(r, g, b));
 			}
 		}
 
@@ -267,6 +276,7 @@ void Application::decrementZoom() {
 // TODO: Make the splash-screen
 
 //void shadeImageLeftToRight(sf::Image, sf::Color, sf::Color);
+int getClickedSprite(Vector<sf::Sprite>& Sprites, sf::Vector2i position);
 
 /**
  * The following is a naive way to implement a splash screen
@@ -275,12 +285,63 @@ void Application::decrementZoom() {
  */
 void Application::splash() {
 	// std::cout << "Splash Screen" << std::endl;
-	sf::Image image;
-	sf::Texture texture;
-	sf::Sprite sprite;
+	
+	Vector<sf::Image> Images(3);
+	Vector<sf::Sprite> Sprites(3);
+	Vector<sf::Texture> Textures(3);
 
-	image.create(100, 100);
+	//sf::Texture texture;
+	//sf::Sprite sprite;
 
+	sf::Text text;
+	sf::Font font;
+
+	if (!font.loadFromFile("fonts/JetBrainsMono-Bold.ttf")) {
+		std::cerr << "Failure to load font! Exiting..." << std::endl;
+		exit(1);
+	}
+
+	text.setFont(font);
+
+	text.setString("Choose a Colorscheme");
+
+	text.setFillColor(sf::Color::White);
+
+	text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+
+	sf::FloatRect value = text.getLocalBounds();
+
+	text.setPosition((WINDOW_SIZE - value.width)/2.0f, 0);
+
+
+	// Create Image Sizes
+	Images[0].create(150, 150);
+	Images[1].create(150, 150);
+	Images[2].create(150, 150);
+
+	// Set up the position of sprites
+	Sprites[0].setPosition(0, 100);
+	Sprites[1].setPosition(225, 100);
+	Sprites[2].setPosition(450, 100);
+
+
+	// Shade the rectangle(s)
+	shadeImageLeftToRight(Images[0], sf::Color(255,0,0), sf::Color(0,0,0));
+	shadeImageLeftToRight(Images[1], sf::Color(0,0,255), sf::Color(0,0,0));
+	shadeImageLeftToRight(Images[2], sf::Color(255,0,0), sf::Color(0,0,255));
+
+
+	// Load and Set Textures
+	Textures[0].loadFromImage(Images[0]);
+	Sprites[0].setTexture(Textures[0]);
+
+	Textures[1].loadFromImage(Images[1]);
+	Sprites[1].setTexture(Textures[1]);
+
+	Textures[2].loadFromImage(Images[2]);
+	Sprites[2].setTexture(Textures[2]);
+
+	// Has the user chosen the scheme?
 	bool chosen = false;
 
 	while(m_window->isOpen() && !chosen) {
@@ -294,25 +355,38 @@ void Application::splash() {
 			}
 			else if (event.type == sf::Event::MouseButtonPressed) {
 				sf::Vector2i position = sf::Mouse::getPosition(*m_window);
-				int i = position.x;
-				int j = position.y;
-				std::printf("%d, %d\n", i, j);
 
-				if (i < 100 && j < 100) {
-					chosen = true;
+				switch(getClickedSprite(Sprites, position)) {
+					case 0:
+						bounded = sf::Color(0, 0, 0);
+						unbounded = sf::Color(255, 0, 0);
+						chosen = true;
+						break;
+					case 1:
+						bounded = sf::Color(0, 0, 0);
+						unbounded = sf::Color(0, 0, 255);
+						chosen = true;
+						break;
+					case 2:
+						bounded = sf::Color(0, 0, 255);
+						unbounded = sf::Color(255, 0, 0);
+						chosen = true;
+						break;
+					default:
+						break;
 				}
 			}
 		}
 
-		// Shade the rectangle.
-		shadeImageLeftToRight(image, sf::Color(255,0,0), sf::Color(0,0,255));
+		m_window->draw(Sprites[0]);
+		m_window->draw(Sprites[1]);
+		m_window->draw(Sprites[2]);
 
-		texture.loadFromImage(image);
-		sprite.setTexture(texture);
+		m_window->draw(text);
 
-		m_window->draw(sprite);
 		m_window->display();
 	}
+	// TODO: If you have time, implement a continue button
 }
 
 
@@ -332,4 +406,22 @@ void shadeImageLeftToRight(sf::Image& image, sf::Color left, sf::Color right) {
 			image.setPixel(i, j, sf::Color(r, g, b));
 		}
 	}
+}
+
+int getClickedSprite(Vector<sf::Sprite>& Sprites, sf::Vector2i position) {
+	
+	for (int i = 0; i < Sprites.size(); ++i) {
+		int x = position.x;
+		int y = position.y;
+		sf::FloatRect bounds = Sprites[i].getLocalBounds();
+		int height = bounds.height;
+		int width = bounds.width;
+		sf::Vector2f top = Sprites[i].getPosition();
+
+		if (x > top.x && x < top.x + width && y > top.y && y < top.y + height) {
+			return i;
+		}
+	}
+
+	return -1;
 }

@@ -6,6 +6,7 @@
 #include <string>
 #include <memory>
 #include "Mandelbrot.h"
+#include "Vector.h"
 
 //TODO: Come up with a better estimate for ITER_MAX
 #define ITER_MAX 200
