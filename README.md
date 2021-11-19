@@ -21,10 +21,10 @@ Try not to resize the window, that's one feature that I didn't implement.
 
 ## Compilation and Build (GNU/LINUX)
 ```bash
-$ ./install_dependencies
+$ git clone https://github.com/swayamchube/cs293-project
 ```
 ```bash
-$ git clone https://github.com/swayamchube/cs293-project
+$ ./install_dependencies
 ```
 ```bash
 $ cd cs293-project
